@@ -1,3 +1,4 @@
+import { TextInput } from 'react-native'
 import styled, { css } from 'styled-components/native'
 
 export const LicensePlateInputContainer = styled.View`
@@ -16,7 +17,7 @@ export const Label = styled.Text`
   `}
 `
 
-export const Input = styled.TextInput`
+export const Input = styled(TextInput)`
   margin-top: 16px;
   text-align: center;
 
