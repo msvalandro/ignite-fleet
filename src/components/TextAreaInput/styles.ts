@@ -1,3 +1,4 @@
+import { TextInput } from 'react-native'
 import styled, { css } from 'styled-components/native'
 
 export const TextAreaInputContainer = styled.View`
@@ -17,7 +18,7 @@ export const Label = styled.Text`
   `}
 `
 
-export const Input = styled.TextInput`
+export const Input = styled(TextInput)`
   margin-top: 16px;
   vertical-align: top;
 
