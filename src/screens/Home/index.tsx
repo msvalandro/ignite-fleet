@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 
 import { CarStatus } from '../../components/CarStatus'
-import { Header } from '../../components/Header'
+import { HomeHeader } from '../../components/HomeHeader'
 import { Content, HomeContainer } from './styles'
 
 export function Home() {
@@ -13,7 +13,7 @@ export function Home() {
 
   return (
     <HomeContainer>
-      <Header />
+      <HomeHeader />
 
       <Content>
         <CarStatus onPress={handleRegisterMovement} />
