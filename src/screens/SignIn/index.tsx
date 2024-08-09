@@ -1,8 +1,11 @@
-import { Text, View } from "react-native";
-import { styles } from "./styles";
+import { Text, View } from 'react-native'
+
+import { styles } from './styles'
 
 export function SignIn() {
-  return <View style={styles.container}>
-    <Text>hello world</Text>
-  </View>
+  return (
+    <View style={styles.container}>
+      <Text>hello world</Text>
+    </View>
+  )
 }
