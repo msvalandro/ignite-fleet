@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/native'
 
-export const CarStatusContainer = styled.View`
+export const CarStatusContainer = styled.TouchableOpacity`
   width: 100%;
   margin: 32px 0;
   padding: 22px;
