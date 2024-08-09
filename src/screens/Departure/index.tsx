@@ -1,10 +1,15 @@
 import { Header } from '../../components/Header'
-import { DepartureContainer } from './styles'
+import { LicensePlateInput } from '../../components/LicensePlateInput'
+import { Content, DepartureContainer } from './styles'
 
 export function Departure() {
   return (
     <DepartureContainer>
       <Header title="Saída" />
+
+      <Content>
+        <LicensePlateInput label="Placa do veículo" placeholder="BRA1234" />
+      </Content>
     </DepartureContainer>
   )
 }
