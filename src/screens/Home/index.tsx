@@ -1,16 +1,18 @@
 import { useNavigation } from '@react-navigation/native'
+import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
-import { Alert } from 'react-native'
+import { Alert, FlatList } from 'react-native'
 
 import { CarStatus } from '../../components/CarStatus'
-import { HistoryCard } from '../../components/HistoryCard'
+import { HistoryCard, IHistoryCard } from '../../components/HistoryCard'
 import { HomeHeader } from '../../components/HomeHeader'
 import { useQuery, useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
-import { Content, HomeContainer } from './styles'
+import { Content, HomeContainer, Label, Title } from './styles'
 
 export function Home() {
   const [vehicleInUse, setVehicleInUse] = useState<History | null>(null)
+  const [vehicleHistory, setVehicleHistory] = useState<IHistoryCard[]>([])
 
   const navigation = useNavigation()
 
@@ -41,10 +43,30 @@ export function Home() {
   }
 
   function fetchHistory() {
-    const response = history.filtered(
-      "status = 'arrival' SORT(created_at DESC)",
-    )
-    console.log(response)
+    try {
+      const response = history.filtered(
+        "status = 'arrival' SORT(created_at DESC)",
+      )
+
+      const formattedHistory = response.map((item) => ({
+        id: item._id.toString(),
+        licensePlate: item.license_plate,
+        created: dayjs(item.created_at).format(
+          '[Saída em] DD/MM/YYYY [às] HH:mm',
+        ),
+        isSync: false,
+      }))
+
+      setVehicleHistory(formattedHistory)
+    } catch (error) {
+      console.log(error)
+
+      Alert.alert('Histórico', 'Não foi possível carregar o histórico.')
+    }
+  }
+
+  function handleHistoryDetails(id: string) {
+    navigation.navigate('arrival', { id })
   }
 
   useEffect(() => {
@@ -71,8 +93,20 @@ export function Home() {
           onPress={handleRegisterMovement}
         />
 
-        <HistoryCard
-          data={{ created: '20/04', licensePlate: 'XXX1212', isSync: false }}
+        <Title>Histórico</Title>
+
+        <FlatList
+          data={vehicleHistory}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <HistoryCard
+              data={item}
+              onPress={() => handleHistoryDetails(item.id)}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          ListEmptyComponent={<Label>Nenhum veículo utilizado</Label>}
         />
       </Content>
     </HomeContainer>

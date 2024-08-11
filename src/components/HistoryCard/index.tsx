@@ -5,6 +5,7 @@ import { useTheme } from 'styled-components/native'
 import { Departure, HistoryCardContainer, Info, LicensePlate } from './styles'
 
 export interface IHistoryCard {
+  id: string
   licensePlate: string
   created: string
   isSync: boolean
@@ -17,7 +18,7 @@ export function HistoryCard({ data, ...rest }: HistoryCardProps) {
   const { COLORS } = useTheme()
 
   return (
-    <HistoryCardContainer {...rest}>
+    <HistoryCardContainer activeOpacity={0.7} {...rest}>
       <Info>
         <LicensePlate>{data.licensePlate}</LicensePlate>
 
