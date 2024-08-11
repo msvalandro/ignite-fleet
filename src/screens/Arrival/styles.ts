@@ -41,6 +41,7 @@ export const Description = styled.Text`
 
 export const Footer = styled.View`
   width: 100%;
+  padding: 32px;
   margin-top: 32px;
 
   flex-direction: row;
