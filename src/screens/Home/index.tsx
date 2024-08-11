@@ -72,7 +72,7 @@ export function Home() {
         />
 
         <HistoryCard
-          data={{ created: '20/04', licensePlate: 'XXX1212', isSync: true }}
+          data={{ created: '20/04', licensePlate: 'XXX1212', isSync: false }}
         />
       </Content>
     </HomeContainer>
