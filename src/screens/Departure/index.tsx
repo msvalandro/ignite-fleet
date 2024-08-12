@@ -162,16 +162,7 @@ export function Departure() {
         behavior={keyboardAvoidingViewBehavior}
       >
         <ScrollView>
-          {currentCoordinates && (
-            <Map
-              coordinates={[
-                { latitude: -23.5657, longitude: -46.6515 },
-                { latitude: -23.5694, longitude: -46.6467 },
-                { latitude: -23.5696, longitude: -46.6465 },
-                { latitude: -23.5728, longitude: -46.6493 },
-              ]}
-            />
-          )}
+          {currentCoordinates && <Map coordinates={[currentCoordinates]} />}
 
           <Content>
             {currentAddress && (
