@@ -8,8 +8,6 @@ export const HeaderContainer = styled.View`
 
   flex-direction: row;
   justify-content: space-between;
-
-  z-index: 1;
 `
 
 export const Title = styled.Text`
