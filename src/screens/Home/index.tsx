@@ -3,10 +3,15 @@ import { useUser } from '@realm/react'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 import { CarStatus } from '../../components/CarStatus'
 import { HistoryCard, IHistoryCard } from '../../components/HistoryCard'
 import { HomeHeader } from '../../components/HomeHeader'
+import {
+  getLastSyncTimestamp,
+  saveLastSyncTimestamp,
+} from '../../libs/async-storage/syncStorage'
 import { useQuery, useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
 import { Content, HomeContainer, Label, Title } from './styles'
@@ -44,11 +49,13 @@ export function Home() {
     }
   }
 
-  function fetchHistory() {
+  async function fetchHistory() {
     try {
       const response = history.filtered(
         "status = 'arrival' SORT(created_at DESC)",
       )
+
+      const lastSync = await getLastSyncTimestamp()
 
       const formattedHistory = response.map((item) => ({
         id: item._id.toString(),
@@ -56,7 +63,7 @@ export function Home() {
         created: dayjs(item.created_at).format(
           '[Saída em] DD/MM/YYYY [às] HH:mm',
         ),
-        isSync: false,
+        isSync: lastSync > item.updated_at.getTime(),
       }))
 
       setVehicleHistory(formattedHistory)
@@ -71,8 +78,18 @@ export function Home() {
     navigation.navigate('arrival', { id })
   }
 
-  function progressNotification(transferred: number, transferable: number) {
-    const percentage = (transferred / transferable) * 100
+  async function progressNotification(
+    transferred: number,
+    transferable: number,
+  ) {
+    const percentage = (Number(transferred) / Number(transferable)) * 100
+
+    if (percentage === 100) {
+      await saveLastSyncTimestamp()
+      await fetchHistory()
+
+      Toast.show({ type: 'info', text1: 'Todos os dados estão sincronizados.' })
+    }
   }
 
   useEffect(() => {
