@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useUser } from '@realm/react'
 import {
   LocationAccuracy,
+  LocationObject,
   LocationSubscription,
   useForegroundPermissions,
   watchPositionAsync,
@@ -18,9 +19,11 @@ import {
 import { Button } from '../../components/Button'
 import { Header } from '../../components/Header'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
+import { Loading } from '../../components/Loading'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
+import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { Content, DepartureContainer, Message } from './styles'
 
@@ -31,6 +34,7 @@ export function Departure() {
   const [licensePlate, setLicensePlate] = useState('')
   const [description, setDescription] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true)
 
   const user = useUser()
   const realm = useRealm()
@@ -42,6 +46,7 @@ export function Departure() {
 
   const licensePlateRef = useRef<TextInput>(null)
   const descriptionRef = useRef<TextInput>(null)
+  const locationSubscription = useRef<LocationSubscription>(null)
 
   function handleDepartureRegister() {
     try {
@@ -88,6 +93,16 @@ export function Departure() {
     }
   }
 
+  async function fetchLocationData(location: LocationObject) {
+    try {
+      const address = await getAddressLocation(location.coords)
+
+      console.log(address)
+    } finally {
+      setIsLoadingLocation(false)
+    }
+  }
+
   useEffect(() => {
     requestLocationForegroundPermission()
   }, [])
@@ -101,13 +116,11 @@ export function Departure() {
 
     watchPositionAsync(
       { accuracy: LocationAccuracy.High, timeInterval: 1000 },
-      (location) => {
-        console.log(location)
-      },
+      fetchLocationData,
     ).then((response) => (subscription = response))
 
     return () => {
-      subscription.remove()
+      subscription?.remove()
     }
   }, [locationForegroundPermission?.granted])
 
@@ -123,6 +136,10 @@ export function Departure() {
         </Message>
       </DepartureContainer>
     )
+  }
+
+  if (isLoadingLocation) {
+    return <Loading />
   }
 
   return (
