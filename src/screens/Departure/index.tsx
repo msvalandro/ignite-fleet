@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '@realm/react'
-import { useRef, useState } from 'react'
+import { useForegroundPermissions } from 'expo-location'
+import { useEffect, useRef, useState } from 'react'
 import {
   Alert,
   KeyboardAvoidingView,
@@ -16,7 +17,7 @@ import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
-import { Content, DepartureContainer } from './styles'
+import { Content, DepartureContainer, Message } from './styles'
 
 const keyboardAvoidingViewBehavior =
   Platform.OS === 'android' ? 'height' : 'position'
@@ -30,6 +31,9 @@ export function Departure() {
   const realm = useRealm()
 
   const navigation = useNavigation()
+
+  const [locationForegroundPermission, requestLocationForegroundPermission] =
+    useForegroundPermissions()
 
   const licensePlateRef = useRef<TextInput>(null)
   const descriptionRef = useRef<TextInput>(null)
@@ -77,6 +81,24 @@ export function Departure() {
 
       setIsRegistering(false)
     }
+  }
+
+  useEffect(() => {
+    requestLocationForegroundPermission()
+  }, [])
+
+  if (!locationForegroundPermission?.granted) {
+    return (
+      <DepartureContainer>
+        <Header title="Saída" />
+
+        <Message>
+          Você precisa permitir que o aplicativo tenha acesso a localização para
+          utilizar essa funcionalidade. Por favor, acesse as configurações do
+          seu dispositivo para conceder essa permissão ao aplicativo.
+        </Message>
+      </DepartureContainer>
+    )
   }
 
   return (

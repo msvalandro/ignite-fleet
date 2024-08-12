@@ -1,4 +1,4 @@
-import styled from 'styled-components/native'
+import styled, { css } from 'styled-components/native'
 
 export const DepartureContainer = styled.View`
   flex: 1;
@@ -11,4 +11,14 @@ export const Content = styled.View`
 
   flex: 1;
   gap: 16px;
+`
+
+export const Message = styled.Text`
+  margin: 24px;
+  text-align: center;
+
+  ${({ theme }) => css`
+    font-family: ${theme.FONT_FAMILY.REGULAR};
+    color: ${theme.COLORS.WHITE};
+  `}
 `
