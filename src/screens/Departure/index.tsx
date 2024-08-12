@@ -75,6 +75,13 @@ export function Departure() {
         )
       }
 
+      if (!currentCoordinates?.latitude && !currentCoordinates?.longitude) {
+        return Alert.alert(
+          'Localização',
+          'Não foi possível obter a localização atual. Tente novamente!',
+        )
+      }
+
       setIsRegistering(true)
 
       realm.write(() => {
