@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
+import { useUser } from '@realm/react'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Alert, FlatList } from 'react-native'
@@ -18,6 +19,7 @@ export function Home() {
 
   const history = useQuery(History)
   const realm = useRealm()
+  const user = useUser()
 
   function handleRegisterMovement() {
     if (vehicleInUse?._id) {
@@ -86,6 +88,16 @@ export function Home() {
   useEffect(() => {
     fetchHistory()
   }, [history])
+
+  useEffect(() => {
+    realm.subscriptions.update((mutableSubs, realm) => {
+      const historyByUserQuery = realm
+        .objects('History')
+        .filtered(`user_id = '${user.id}'`)
+
+      mutableSubs.add(historyByUserQuery, { name: 'history_by_user' })
+    })
+  }, [realm])
 
   return (
     <HomeContainer>
