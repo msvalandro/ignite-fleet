@@ -28,6 +28,7 @@ import { Map } from '../../components/Map'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
+import { startLocationTask } from '../../tasks/backgroundLocationTask'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { Content, DepartureContainer, Message } from './styles'
@@ -95,6 +96,8 @@ export function Departure() {
           'É necessário permitir que o App tenha acesso a localização em segundo plano.',
         )
       }
+
+      await startLocationTask()
 
       realm.write(() => {
         realm.create(
