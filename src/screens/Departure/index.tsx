@@ -7,6 +7,7 @@ import {
   useForegroundPermissions,
   watchPositionAsync,
 } from 'expo-location'
+import { Car } from 'phosphor-react-native'
 import { useEffect, useRef, useState } from 'react'
 import {
   Alert,
@@ -49,7 +50,6 @@ export function Departure() {
 
   const licensePlateRef = useRef<TextInput>(null)
   const descriptionRef = useRef<TextInput>(null)
-  const locationSubscription = useRef<LocationSubscription>(null)
 
   function handleDepartureRegister() {
     try {
@@ -161,6 +161,7 @@ export function Departure() {
               <LocationInfo
                 label="Localização atual"
                 description={currentAddress}
+                icon={Car}
               />
             )}
 

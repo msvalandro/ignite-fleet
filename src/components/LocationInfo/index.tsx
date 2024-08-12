@@ -1,13 +1,20 @@
+import { IconBox, IIconBox } from '../IconBox'
 import { Description, Info, Label, LocationInfoContainer } from './styles'
 
-export interface LocationInfoProps {
+export interface ILocationInfo {
   label: string
   description: string
 }
 
-export function LocationInfo({ label, description }: LocationInfoProps) {
+interface LocationInfoProps extends ILocationInfo {
+  icon: IIconBox
+}
+
+export function LocationInfo({ label, description, icon }: LocationInfoProps) {
   return (
     <LocationInfoContainer>
+      <IconBox icon={icon} />
+
       <Info>
         <Label numberOfLines={1}>{label}</Label>
 
