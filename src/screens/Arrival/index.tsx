@@ -9,6 +9,7 @@ import { BSON } from 'realm'
 import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
+import { Loading } from '../../components/Loading'
 import { ILocationInfo } from '../../components/LocationInfo'
 import { Locations } from '../../components/Locations'
 import { Map } from '../../components/Map'
@@ -35,6 +36,8 @@ interface RouteParamsProps {
 export function Arrival() {
   const [dataNotSync, setDataNotSync] = useState(false)
   const [coordinates, setCoordinates] = useState<LatLng[]>([])
+
+  const [isLoading, setIsLoading] = useState(true)
   const [departure, setDeparture] = useState<ILocationInfo>({} as ILocationInfo)
   const [arrival, setArrival] = useState<ILocationInfo | null>(null)
 
@@ -133,17 +136,23 @@ export function Arrival() {
         ),
       })
     }
+
+    setIsLoading(false)
   }
 
   useEffect(() => {
     updateSyncData()
   }, [])
 
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
     <ArrivalContainer>
       <Header title={title} />
 
-      {/* {coordinates.length > 0 && <Map coordinates={coordinates} />} */}
+      {coordinates.length > 0 && <Map coordinates={coordinates} />}
 
       <Content>
         <Locations departure={departure} arrival={arrival} />
