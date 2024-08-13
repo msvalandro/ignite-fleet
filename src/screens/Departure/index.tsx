@@ -31,7 +31,8 @@ import { History } from '../../libs/realm/schemas/History'
 import { startLocationTask } from '../../tasks/backgroundLocationTask'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
-import { Content, DepartureContainer, Message } from './styles'
+import { openSettings } from '../../utils/openSettings'
+import { Content, DepartureContainer, Message, MessageContent } from './styles'
 
 const keyboardAvoidingViewBehavior =
   Platform.OS === 'android' ? 'height' : 'position'
@@ -81,6 +82,7 @@ export function Departure() {
         return Alert.alert(
           'Localização',
           'Não foi possível obter a localização atual. Tente novamente!',
+          [{ text: 'Abrir configurações', onPress: openSettings }],
         )
       }
 
@@ -169,11 +171,16 @@ export function Departure() {
       <DepartureContainer>
         <Header title="Saída" />
 
-        <Message>
-          Você precisa permitir que o aplicativo tenha acesso a localização para
-          utilizar essa funcionalidade. Por favor, acesse as configurações do
-          seu dispositivo para conceder essa permissão ao aplicativo.
-        </Message>
+        <MessageContent>
+          <Message>
+            Você precisa permitir que o aplicativo tenha acesso a localização
+            para utilizar essa funcionalidade. Por favor, acesse as
+            configurações do seu dispositivo para conceder essa permissão ao
+            aplicativo.
+          </Message>
+
+          <Button title="Abrir configurações" onPress={openSettings} />
+        </MessageContent>
       </DepartureContainer>
     )
   }
