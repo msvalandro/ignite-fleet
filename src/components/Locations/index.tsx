@@ -5,10 +5,10 @@ import { Line, LocationsContainer } from './styles'
 
 interface LocationsProps {
   departure: ILocationInfo
-  arrival: ILocationInfo
+  arrival?: ILocationInfo | null
 }
 
-export function Locations({ departure, arrival }: LocationsProps) {
+export function Locations({ departure, arrival = null }: LocationsProps) {
   return (
     <LocationsContainer>
       <LocationInfo
@@ -17,13 +17,17 @@ export function Locations({ departure, arrival }: LocationsProps) {
         description={departure.description}
       />
 
-      <Line />
+      {arrival && (
+        <>
+          <Line />
 
-      <LocationInfo
-        icon={FlagCheckered}
-        label={arrival.label}
-        description={arrival.description}
-      />
+          <LocationInfo
+            icon={FlagCheckered}
+            label={arrival.label}
+            description={arrival.description}
+          />
+        </>
+      )}
     </LocationsContainer>
   )
 }
