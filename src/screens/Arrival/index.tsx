@@ -2,11 +2,14 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { X } from 'phosphor-react-native'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
+import { LatLng } from 'react-native-maps'
 import { BSON } from 'realm'
 
 import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
+import { Map } from '../../components/Map'
+import { getStorageLocation } from '../../libs/async-storage/locationStorage'
 import { getLastSyncTimestamp } from '../../libs/async-storage/syncStorage'
 import { useObject, useRealm } from '../../libs/realm'
 import { History } from '../../libs/realm/schemas/History'
@@ -27,6 +30,7 @@ interface RouteParamsProps {
 
 export function Arrival() {
   const [dataNotSync, setDataNotSync] = useState(false)
+  const [coordinates, setCoordinates] = useState<LatLng[]>([])
 
   const route = useRoute()
   const { id } = route.params as RouteParamsProps
@@ -38,10 +42,12 @@ export function Arrival() {
 
   const title = history?.status === 'departure' ? 'Chegada' : 'Detalhes'
 
-  function removeVehicleUsage() {
+  async function removeVehicleUsage() {
     realm.write(() => {
       realm.delete(history)
     })
+
+    await stopLocationTask()
 
     navigation.goBack()
   }
@@ -62,12 +68,12 @@ export function Arrival() {
         )
       }
 
-      await stopLocationTask()
-
       realm.write(() => {
         history.status = 'arrival'
         history.updated_at = new Date()
       })
+
+      await stopLocationTask()
 
       Alert.alert('Chegada', 'Chegada registrada com sucesso!')
 
@@ -87,6 +93,10 @@ export function Arrival() {
     const lastSync = await getLastSyncTimestamp()
 
     setDataNotSync(history.updated_at.getTime() > lastSync)
+
+    const locationsStorage = await getStorageLocation()
+
+    setCoordinates(locationsStorage)
   }
 
   useEffect(() => {
@@ -96,6 +106,8 @@ export function Arrival() {
   return (
     <ArrivalContainer>
       <Header title={title} />
+
+      {coordinates.length > 0 && <Map coordinates={coordinates} />}
 
       <Content>
         <Label>Placa do veículo</Label>
